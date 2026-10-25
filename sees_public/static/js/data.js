@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let searchTimeout = null;
   let searchController = null;
 
+  // Draws one page of data into the table and updates the pager.
   function renderTable(data) {
     tbody.innerHTML = "";
 
@@ -68,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     nextButton.disabled = currentFilter.currentPage === totalPages;
   }
 
+  // Shows an arrow and underline on the sorted column header, clears the others.
   function updateSortArrows() {
     headers.forEach((header) => {
       const arrow = header.querySelector(".sort-arrow");
@@ -88,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Sorts filteredData in place by column and records it as the active sort.
   function sortData(column, ascending = true) {
     const key = (row) =>
       numericColumns.has(column)
@@ -107,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return filteredData;
   }
 
+  // Rebuilds filteredData from originalData using the year dropdown, re-applies the active sort, and renders.
   function applyFilter() {
     const selectedYear = yearFilter.value;
 
@@ -124,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTable(filteredData);
   }
 
+  // Reads the items-per-page dropdown, returns to page 1 and re-renders.
   function setNumItemsPerPage() {
     currentFilter.numPerPage = parseInt(numPerPage.value, 10);
     currentFilter.currentPage = 1;
@@ -161,10 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Listener for search input:
-  // Listen on input. Timeout of 300 ms calling function. The search function will send request to Flask.
-  // Flask will query the ES index and return JSON array of objects. JS will render the array into the table.
-  // If no input, revert to original data
   searchInput.addEventListener("input", () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
@@ -172,6 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   });
 
+  // Sends value to POST /search and, if it is still the last request, replaces originalData.
   function performSearch(value) {
     searchController?.abort();
     searchController = new AbortController();
