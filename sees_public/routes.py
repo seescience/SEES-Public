@@ -2,7 +2,8 @@
 
 import json
 
-from flask import Blueprint, request, abort, render_template, render_template_string, current_app
+from flask import Blueprint, request, abort, render_template, current_app
+from werkzeug.utils import send_from_directory
 
 from .search import reset_index, index_all_data, query_index
 from sees_public.elastic import get_elastic
@@ -67,18 +68,10 @@ def search():
 @data_bp.route("/data/<year>/<id>/")
 def serve_data(year, id):
     """Render index.html from data/year/id/ directory as a template."""
-    data_path = current_app.config["DATA_DIR"] / year / id
-    index_file = data_path / "index.html"
-
-    if index_file.exists():
-        # Read the HTML file content
-        with open(index_file, "r", encoding="utf-8") as f:
-            template_content = f.read()
-
-        # Render it as a Jinja2 template
-        return render_template_string(template_content)
-    else:
+    if not (year.isdigit() and id.isdigit()):
         abort(404)
+    folder = current_app.config["DATA_DIR"] / year / id
+    return send_from_directory(folder, "index.html")
 
 
 # Documentation route
