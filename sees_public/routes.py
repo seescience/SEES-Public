@@ -2,8 +2,7 @@
 
 import json
 
-from flask import Blueprint, request, abort, render_template, current_app
-from werkzeug.utils import send_from_directory
+from flask import Blueprint, request, abort, render_template, current_app, send_from_directory
 
 from .search import reset_index, index_all_data, query_index
 from sees_public.elastic import get_elastic
@@ -67,7 +66,7 @@ def search():
 @data_bp.route("/data/<year>/<id>")
 @data_bp.route("/data/<year>/<id>/")
 def serve_data(year, id):
-    """Render index.html from data/year/id/ directory as a template."""
+    """Serve index.html from data/year/id/."""
     if not (year.isdigit() and id.isdigit()):
         abort(404)
     folder = current_app.config["DATA_DIR"] / year / id

@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let searchTimeout = null;
+  let searchController = null;
 
   function renderTable(data) {
     tbody.innerHTML = "";
@@ -97,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const bValue = key(b);
       if (aValue < bValue) return ascending ? -1 : 1;
       if (aValue > bValue) return ascending ? 1 : -1;
+      return 0;
     });
 
     currentFilter.column = column;
@@ -137,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ascending = !currentFilter.ascending;
       }
 
-      data = sortData(column, ascending);
+      const data = sortData(column, ascending);
       renderTable(data);
     });
   });
